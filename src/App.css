@@ -1,17 +1,88 @@
-body {
+*  {
   margin: 0;
-  padding: 20px;
-  background-color: #1a1a1a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-#root {
-  max-width: fit-content;
+body {
+  font-family: "Phantom Sans", system-ui, sans-serif;
+  background-color: #000;
+  color: #1f2d3d;
+  min-height: 100vh;
 }
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+.app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.landing-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #000;
+  text-align: center;
+  overflow: hidden;
+}
+
+.landing-content {
+  text-align: center;
+  max-width: 600px;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.title {
+  font-size: 4em;
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.95);
+  background-clip: text;
+  margin-bottom: 10px;
+  font-family: "Playfair Display", serif;
+}
+
+.subtitle {
+  font-size: 1.5em;
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 500;
+}
+
+.start-button {
+  padding: 16px 50px;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.start-button:hover {
+  transform: translateY(0);
+}
+
+.game-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  overflow: hidden;
+  }
 
 .game-container {
   display: grid;
@@ -20,6 +91,36 @@ body {
   background-color: #111;
   padding: 10px;
   border-radius: 8px;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  font-weight: 600;
+  color: #fff;
+  background-color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #555;
+  transform: translateX(-5px);
+} 
+
+.game-stats {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #fff;
+}
+
+.game-stats h2 
+{
+  margin: 0;  
 }
 
 .board {
@@ -31,6 +132,7 @@ body {
   background-color: #222;
   padding: 10px;
   width: fit-content;
+  border: 3px solid #fff;
 }
 
 .tile {
@@ -65,3 +167,28 @@ body {
   z-index: 5;
 }
 
+@media (max-width: 768px)
+{
+  .game-container {
+    grid-template-columns: repeat(12, 30px);
+    grid-gap: 1px;
+    padding: 5px;
+  }
+
+  .board {
+    grid-template-columns: repeat(12, 36px);
+    grid-template-rows: repeat(12, 36px);
+    gap: 1px;
+    padding: 5px;
+  }
+
+  .tile {
+    width: 36px;
+    height: 36px;
+  }
+
+  .player, .item {
+    width: 36px;
+    height: 36px;
+  }
+}

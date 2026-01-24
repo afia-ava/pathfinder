@@ -63,26 +63,24 @@ function findPath(start: Vec, end: Vec)
   }
 }
 
-export default function App() {
+function MazeGame()
+{
   const [pos, setPos] = useState({ x: 0, y: 0});
-  const [target, setTarget] = useState<Vec | null>(null);
   const [path, setPath] = useState<Vec[]>([]);
-  const [items, setItems] = useState<Vec[]>([
+  const [items, setItems ] = useState<Vec[]>([
     { x: 4, y: 2 },
     { x: 7, y: 6 },
     { x: 10, y: 3 },
   ]);
-
+  const [collectedCount, setCollectedCount] = useState(0);
   useEffect(() => {
     if (!path.length) return;
-
     const id = setInterval(() => 
     {
       setPos(p => {
         const next = path[0];
         const dx = next.x - p.x;
         const dy = next.y - p.y;
-
         if (Math.abs(dx) < SPEED && Math.abs(dy) < SPEED)
         {
           setPath(p => p.slice(1));
@@ -94,17 +92,17 @@ export default function App() {
     return () => clearInterval(id);
   }, [path]);
 
-  useEffect(() => 
-  {
-    setItems(items =>
-      items.filter(
-        i => Math.floor(pos.x) !== i.x || Math.floor(pos.y) !== i.y
-      )
+  useEffect(() => {
+    const newItems = items.filter(
+      i => Math.floor(pos.x) !== i.x || Math.floor(pos.y) !== i.y
     );
+    if (newItems.length !== items.length) {
+      setCollectedCount(c => c + (items.length - newItems.length));
+      setItems(newItems);
+    }
   }, [pos]);
 
   function clickTile(x: number, y: number) {
-    setTarget({ x, y });
     const p = findPath(
       { x: Math.floor(pos.x), y: Math.floor(pos.y) },
       { x, y }
@@ -113,28 +111,30 @@ export default function App() {
   }
 
   return (
-    <div className="board">
-      {Array.from({ length: GRID }).map((_, y) =>
-        Array.from({ length: GRID }).map((_, x) => (
+    <div className="game-wrapper">
+      <div className="game-stats">
+        <h2>Items Collected: {collectedCount}</h2>
+      </div>
+      <div className="board">
+        {Array.from({ length: GRID }).map((_, y) =>
+          Array.from({ length: GRID }).map((_, x) => (
+            <div
+              key={`${x},${y}`}
+              className="tile"
+              onClick={() => clickTile(x, y)}
+            /> 
+          ))
+        )}
+        {items.map((item, i) => (
           <div
-            key={`${x},${y}`}
-            className="tile"
-            onClick={() => clickTile(x, y)}
-          /> 
-        ))
-      )}
-
-      {/* Items */}
-      {items.map((item, i) => (
-        <div
-          key={`item-${i}-${item.x}-${item.y}`}
-          className="item"
-          style={{
-            left: item.x * TILE,
-            top: item.y * TILE,
-          }}
-        />
-      ))}
+            key={`item-${i}-${item.x}-${item.y}`}
+            className="item"
+            style={{
+              left: item.x * TILE,
+              top: item.y * TILE,
+            }}
+          />
+        ))}
 
       {/* Player */}
       <div
@@ -142,8 +142,36 @@ export default function App() {
         style={{
           left: pos.x * TILE,
           top: pos.y * TILE,
-        }}
-      />
+        }}/>
+      </div>
     </div>
   );
 }
+
+export default function App() {
+  const [gameStarted, setGameStarted] = useState(false);
+  
+  return (
+    <div className="app">
+      {!gameStarted ? (
+        <div className="landing-page">
+          <div className="landing-content">
+            <h1 className="title">Pathfinder</h1>
+            <p className="subtitle">Navigate the maze and collect all the items!</p>
+            <button className="start-button" onClick={() => setGameStarted(true)}>
+              Start Game
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="game-view">
+          <button className="back-button" onClick={() => setGameStarted(false)}>
+            Back to Menu
+          </button>
+          <MazeGame />
+        </div>
+      )}
+    </div>
+  );
+}
+
